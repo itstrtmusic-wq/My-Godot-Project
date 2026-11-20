@@ -1,8 +1,12 @@
 config_version=5
 
 [application]
-config/name="First Person Movement Lab"
-run/main_scene="res://demo/movement_lab.tscn"
+config/name="Cinderline"
+config/icon="res://game/icon.png"
+run/main_scene="res://game/main.tscn"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+boot_splash/show_image=false
+boot_splash/bg_color=Color(0.039, 0.071, 0.079, 1)
 
 [display]
 window/size/viewport_width=1280
@@ -48,4 +52,64 @@ sprint={
 crouch={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"physical_keycode":4194326)]
+}
+
+fire={
+"deadzone": 0.2,
+"events": [Object(InputEventMouseButton,"button_index":1)]
+}
+
+aim={
+"deadzone": 0.2,
+"events": [Object(InputEventMouseButton,"button_index":2)]
+}
+
+reload={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":82)]
+}
+
+interact={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":69)]
+}
+
+fabricator={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":4194306)]
+}
+
+toggle_build={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":66)]
+}
+
+build_1={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":49)]
+}
+
+build_2={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":50)]
+}
+
+build_3={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":51)]
+}
+
+dismantle={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":88)]
+}
+
+use_patch={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":86)]
+}
+
+eat={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":70)]
 }

@@ -29,6 +29,10 @@ const CROUCH_EYES := 1.02
 @onready var capsule := collider.shape as CapsuleShape3D
 @onready var gravity := float(ProjectSettings.get_setting("physics/3d/default_gravity"))
 
+var sprint_allowed := true
+var speed_scale := 1.0
+var aim_blend := 0.0
+
 var crouching := false
 var sprinting := false
 var pitch := 0.0
@@ -75,10 +79,10 @@ func _physics_process(delta: float) -> void:
 	if captured:
 		movement = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	update_stance(captured and Input.is_action_pressed("crouch"), delta)
-	sprinting = captured and was_grounded and not crouching and movement.y < -0.55 and Input.is_action_pressed("sprint")
+	sprinting = sprint_allowed and captured and was_grounded and not crouching and movement.y < -0.55 and Input.is_action_pressed("sprint")
 
 	var top_speed := crouch_speed if crouching else (sprint_speed if sprinting else walk_speed)
-	var wish := global_transform.basis * Vector3(movement.x, 0.0, movement.y) * top_speed
+	var wish := global_transform.basis * Vector3(movement.x, 0.0, movement.y) * top_speed * speed_scale
 	var horizontal := Vector2(velocity.x, velocity.z)
 	var acceleration := air_acceleration
 	if was_grounded:
@@ -159,7 +163,9 @@ func update_gait(distance: float, movement: Vector2, delta: float) -> void:
 	camera.position.y = eye_height - STAND_EYES + (cos(stride_phase * 2.0) * bob + landing_offset) * motion_strength
 	var strafe := -movement.x * gait_weight * 0.022
 	camera.rotation.z = lerpf(camera.rotation.z, (strafe + turn_sway) * motion_strength, blend)
-	camera.fov = lerpf(camera.fov, base_fov + (sprint_fov_boost * motion_strength if sprinting else 0.0), blend)
+	var sprint_boost := sprint_fov_boost * motion_strength if sprinting else 0.0
+	var target_fov := lerpf(base_fov + sprint_boost, base_fov * 0.79, aim_blend)
+	camera.fov = lerpf(camera.fov, target_fov, blend)
 
 
 func play_foley(sound: AudioStreamWAV, volume: float, low_pitch: float, high_pitch: float) -> void:
