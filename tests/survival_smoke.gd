@@ -1,6 +1,5 @@
 extends SceneTree
 
-const MAIN = preload("res://game/main.tscn")
 const Game = preload("res://game/main.gd")
 const Rules = preload("res://game/rules.gd")
 const Session = preload("res://game/session.gd")
@@ -53,7 +52,22 @@ func collect(session: Session, ids: Array[String]) -> void:
 
 
 func run() -> void:
-	var game := MAIN.instantiate() as Game
+	var startup_path := str(ProjectSettings.get_setting("application/run/main_scene", ""))
+	var startup := load(startup_path) as PackedScene
+	if startup == null:
+		expect(false, "The configured main scene loads")
+		quit(1)
+		return
+	var instance := startup.instantiate()
+	var game := instance as Game
+	expect(game != null, "The configured main scene launches Cinderline")
+	if game == null:
+		instance.free()
+		quit(1)
+		return
+	for action in [&"fire", &"aim", &"reload", &"interact", &"fabricator", &"toggle_build"]:
+		expect(InputMap.has_action(action) and not InputMap.action_get_events(action).is_empty(),
+			"The project binds " + action)
 	root.add_child(game)
 	await process_frame
 	expect(game.screen == "title" and paused, "The game starts at a paused title screen")
